@@ -1,0 +1,36 @@
+includes:
+    - vendor/larastan/larastan/extension.neon
+    - vendor/xefi/phpstan-xefi-rules/extension.neon
+
+parameters:
+    paths:
+        - app
+        - database
+        - routes
+        - tests
+
+    level: 5
+
+    excludePaths:
+        - bootstrap/cache
+        - storage
+
+    reportUnmatchedIgnoredErrors: false
+
+    ignoreErrors:
+        # Cascade DB voulu pour l'integrite referentielle (plus sur que des hooks Eloquent)
+        - identifier: xefi.noCascadeDeleteLaravel
+
+        # Try-catch legitime pour gerer les appels HTTP/IO externes
+        - identifier: xefi.noTryCatch
+
+        # Seeders peuvent legitimement contenir des methodes longues (listes statiques)
+        -
+            identifier: xefi.maxLinePerMethod
+            paths:
+                - database/seeders/*
+
+        # Test d'exemple Laravel
+        -
+            message: '#assertTrue\(\) with true will always evaluate to true#'
+            path: tests/Unit/ExampleTest.php

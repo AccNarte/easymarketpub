@@ -1,0 +1,18 @@
+# Artefacts de déploiement (générés par les scripts)
+backend-deploy.tar.gz
+frontend-dist.tar.gz
+create-admin.php
+
+# Au cas où composer/npm tournent au mauvais endroit
+/vendor/
+/composer.json
+/composer.lock
+/node_modules/
+
+# Editor
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
