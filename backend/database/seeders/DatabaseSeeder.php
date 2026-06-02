@@ -14,10 +14,12 @@ class DatabaseSeeder extends Seeder
             AdminUserSeeder::class,
         ]);
 
-        // Create test user
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
-        ]);
+        // Crée un utilisateur de test (factory dispo uniquement en dev avec faker)
+        if (app()->environment('local', 'testing')) {
+            User::factory()->create([
+                'name' => 'Utilisateur de test',
+                'email' => 'test@example.com',
+            ]);
+        }
     }
 }

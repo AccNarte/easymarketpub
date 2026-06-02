@@ -81,4 +81,32 @@ class PurchaseController extends Controller
 
         return response()->json($sales);
     }
+
+    public function markShipped(Request $request, Purchase $purchase)
+    {
+        if ($purchase->seller_id !== $request->user()->id) {
+            return response()->json(['message' => 'Action non autorisée'], 403);
+        }
+
+        $purchase->update([
+            'shipping_status' => Purchase::SHIPPING_SHIPPED,
+            'shipped_at' => now(),
+        ]);
+
+        return response()->json($purchase->fresh(['listing.images', 'buyer']));
+    }
+
+    public function markDelivered(Request $request, Purchase $purchase)
+    {
+        if ($purchase->buyer_id !== $request->user()->id) {
+            return response()->json(['message' => 'Action non autorisée'], 403);
+        }
+
+        $purchase->update([
+            'shipping_status' => Purchase::SHIPPING_DELIVERED,
+            'delivered_at' => now(),
+        ]);
+
+        return response()->json($purchase->fresh(['listing.images', 'seller']));
+    }
 }

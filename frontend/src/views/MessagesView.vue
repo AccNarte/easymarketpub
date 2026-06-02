@@ -50,11 +50,11 @@ onMounted(async () => {
 <template>
   <div class="min-h-[calc(100vh-64px)] bg-gradient-to-b from-slate-50 to-slate-100">
     <div class="max-w-2xl mx-auto">
-      <!-- Header -->
+      <!-- En-tete -->
       <div class="sticky top-16 z-10 bg-white/80 backdrop-blur-lg border-b border-slate-200 px-4 py-4">
         <h1 class="text-2xl font-bold text-slate-900 mb-4">Messages</h1>
 
-        <!-- Search -->
+        <!-- Recherche -->
         <div class="relative">
           <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -68,12 +68,12 @@ onMounted(async () => {
         </div>
       </div>
 
-      <!-- Loading -->
+      <!-- Chargement -->
       <div v-if="loading" class="flex justify-center py-20">
         <div class="w-10 h-10 border-3 border-primary-600 border-t-transparent rounded-full animate-spin"></div>
       </div>
 
-      <!-- Empty State -->
+      <!-- Etat vide -->
       <div v-else-if="conversations.length === 0" class="px-4 py-20 text-center">
         <div class="w-24 h-24 mx-auto mb-6 bg-gradient-to-br from-primary-100 to-primary-200 rounded-full flex items-center justify-center">
           <svg class="w-12 h-12 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -90,7 +90,7 @@ onMounted(async () => {
         </RouterLink>
       </div>
 
-      <!-- Conversations List -->
+      <!-- Liste des conversations -->
       <div v-else class="divide-y divide-slate-100">
         <RouterLink
           v-for="conv in filteredConversations"
@@ -103,11 +103,11 @@ onMounted(async () => {
             <div class="w-14 h-14 bg-gradient-to-br from-primary-400 to-primary-600 rounded-full flex items-center justify-center text-white text-xl font-semibold shadow-lg shadow-primary-600/20">
               {{ conv.other_user?.name?.[0]?.toUpperCase() || '?' }}
             </div>
-            <!-- Online indicator (decorative) -->
+            <!-- Pastille en ligne (decorative) -->
             <div class="absolute bottom-0 right-0 w-4 h-4 bg-emerald-500 border-2 border-white rounded-full"></div>
           </div>
 
-          <!-- Content -->
+          <!-- Contenu -->
           <div class="flex-1 min-w-0">
             <div class="flex items-center justify-between gap-2 mb-1">
               <h3 class="font-semibold text-slate-900 truncate">

@@ -8,12 +8,12 @@ return new class extends Migration
 {
     public function up(): void
     {
-        // Add balance to users
+        // Ajoute la colonne solde sur les utilisateurs
         Schema::table('users', function (Blueprint $table) {
             $table->decimal('balance', 12, 2)->default(0)->after('password');
         });
 
-        // Payment methods table
+        // Table des moyens de paiement
         Schema::create('payment_methods', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
@@ -25,7 +25,7 @@ return new class extends Migration
             $table->timestamps();
         });
 
-        // Transactions table
+        // Table des transactions
         Schema::create('transactions', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');

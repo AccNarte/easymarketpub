@@ -52,7 +52,7 @@ const timeAgo = (date) => {
       </div>
     </div>
 
-    <!-- Content -->
+    <!-- Contenu -->
     <div class="p-3">
       <p class="text-lg font-bold text-gray-900">{{ formatPrice(listing.price) }}</p>
       <h3 class="text-sm text-gray-700 truncate mt-0.5">{{ listing.title }}</h3>

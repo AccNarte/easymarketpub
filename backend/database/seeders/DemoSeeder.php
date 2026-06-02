@@ -150,10 +150,12 @@ class DemoSeeder extends Seeder
                 ])
             );
 
-            foreach ($listingsData as $position => $listingData) {
+            $this->attachPaymentMethods($user);
+
+            foreach ($listingsData as $listingData) {
                 $category = Category::where('slug', $listingData['category'])->first();
                 if (!$category) {
-                    $this->command?->warn("Catégorie introuvable : {$listingData['category']}");
+                    $this->command->warn("Catégorie introuvable : {$listingData['category']}");
                     continue;
                 }
 
@@ -172,25 +174,71 @@ class DemoSeeder extends Seeder
                 );
 
                 if ($listing->images()->count() === 0) {
-                    $this->attachImage($listing, $listingData['seed'], $listingData['keyword']);
+                    $this->attachImage($listing, $listingData['seed']);
                 }
             }
         }
+
+        foreach (User::where('role', User::ROLE_ADMIN)->get() as $admin) {
+            $this->attachPaymentMethods($admin);
+        }
     }
 
-    private function attachImage(Listing $listing, string $seed, string $keyword): void
+    private function attachPaymentMethods(User $user): void
+    {
+        if ($user->paymentMethods()->exists()) {
+            return;
+        }
+
+        $methods = [
+            [
+                'type' => 'card',
+                'provider' => 'visa',
+                'label' => 'Visa •••• 4242',
+                'details' => null,
+                'is_default' => true,
+            ],
+            [
+                'type' => 'card',
+                'provider' => 'mastercard',
+                'label' => 'Mastercard •••• 5454',
+                'details' => null,
+                'is_default' => false,
+            ],
+            [
+                'type' => 'bank',
+                'provider' => 'paypal',
+                'label' => 'PayPal ' . $user->email,
+                'details' => null,
+                'is_default' => false,
+            ],
+            [
+                'type' => 'crypto',
+                'provider' => 'bitcoin',
+                'label' => 'Bitcoin Wallet',
+                'details' => null,
+                'is_default' => false,
+            ],
+        ];
+
+        foreach ($methods as $method) {
+            $user->paymentMethods()->create($method);
+        }
+    }
+
+    private function attachImage(Listing $listing, string $seed): void
     {
         $url = "https://picsum.photos/seed/{$seed}/1200/800";
 
         try {
             $response = Http::timeout(15)->withOptions(['allow_redirects' => true])->get($url);
         } catch (\Throwable $e) {
-            $this->command?->warn("Image fetch failed for {$listing->title}: {$e->getMessage()}");
+            $this->command->warn("Image fetch failed for {$listing->title}: {$e->getMessage()}");
             return;
         }
 
         if (!$response->successful()) {
-            $this->command?->warn("Image fetch HTTP {$response->status()} for {$listing->title}");
+            $this->command->warn("Image fetch HTTP {$response->status()} for {$listing->title}");
             return;
         }
 

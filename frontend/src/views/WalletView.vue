@@ -95,12 +95,12 @@ onMounted(async () => {
 
 <template>
   <div class="container-page max-w-2xl">
-    <!-- Message -->
+    <!-- Message flash -->
     <div v-if="message.text" :class="['mb-4 p-3 rounded-lg text-sm', message.type === 'success' ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-700']">
       {{ message.text }}
     </div>
 
-    <!-- Balance -->
+    <!-- Solde -->
     <div class="card p-6 mb-6">
       <p class="text-sm text-gray-500 mb-1">Mon solde</p>
       <p class="text-3xl font-bold text-gray-900 mb-4">{{ formatPrice(wallet.balance) }}</p>
@@ -114,7 +114,7 @@ onMounted(async () => {
       </div>
     </div>
 
-    <!-- Tabs -->
+    <!-- Onglets -->
     <div class="flex gap-4 mb-4 border-b border-gray-200">
       <button @click="activeTab = 'transactions'" :class="['pb-3 text-sm font-medium border-b-2 -mb-px', activeTab === 'transactions' ? 'border-primary-600 text-primary-600' : 'border-transparent text-gray-500']">
         Historique
@@ -124,7 +124,7 @@ onMounted(async () => {
       </button>
     </div>
 
-    <!-- Transactions -->
+    <!-- Historique des transactions -->
     <div v-if="activeTab === 'transactions'">
       <div v-if="wallet.loading" class="text-center py-8">
         <div class="w-6 h-6 border-2 border-primary-600 border-t-transparent rounded-full animate-spin mx-auto"></div>
@@ -150,7 +150,7 @@ onMounted(async () => {
       </div>
     </div>
 
-    <!-- Payment Methods -->
+    <!-- Moyens de paiement -->
     <div v-if="activeTab === 'methods'">
       <button @click="modal = 'add-method'" class="btn btn-secondary w-full mb-4">
         + Ajouter un moyen de paiement
@@ -185,9 +185,9 @@ onMounted(async () => {
       </div>
     </div>
 
-    <!-- Modal Backdrop -->
+    <!-- Fond de la modale -->
     <div v-if="modal" class="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-4" @click.self="modal = null">
-      <!-- Deposit Modal -->
+      <!-- Modale de depot -->
       <div v-if="modal === 'deposit'" class="bg-white rounded-xl p-6 w-full max-w-sm">
         <h3 class="text-lg font-semibold text-gray-900 mb-4">Recharger</h3>
 
@@ -224,7 +224,7 @@ onMounted(async () => {
         </div>
       </div>
 
-      <!-- Withdraw Modal -->
+      <!-- Modale de retrait -->
       <div v-if="modal === 'withdraw'" class="bg-white rounded-xl p-6 w-full max-w-sm">
         <h3 class="text-lg font-semibold text-gray-900 mb-4">Retirer</h3>
         <p class="text-sm text-gray-500 mb-4">Disponible: {{ formatPrice(wallet.balance) }}</p>
@@ -251,7 +251,7 @@ onMounted(async () => {
         </div>
       </div>
 
-      <!-- Add Method Modal -->
+      <!-- Modale d'ajout de moyen de paiement -->
       <div v-if="modal === 'add-method'" class="bg-white rounded-xl p-6 w-full max-w-sm">
         <h3 class="text-lg font-semibold text-gray-900 mb-4">Ajouter un moyen de paiement</h3>
 

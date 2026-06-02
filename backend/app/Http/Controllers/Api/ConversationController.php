@@ -33,20 +33,20 @@ class ConversationController extends Controller
     {
         $user = $request->user();
 
-        // Check authorization
+        // Vérification de l'autorisation
         if ($user->id !== $conversation->buyer_id && $user->id !== $conversation->seller_id) {
             abort(403, 'Accès non autorisé');
         }
 
         $conversation->load(['listing.images', 'buyer', 'seller', 'messages.sender']);
 
-        // Mark messages as read
+        // Marque comme lus les messages reçus
         $conversation->messages()
             ->where('sender_id', '!=', $user->id)
             ->whereNull('read_at')
             ->update(['read_at' => now()]);
 
-        // Add other_user for convenience
+        // Ajoute l'interlocuteur pour faciliter l'affichage côté client
         $conversation->other_user = $conversation->buyer_id === $user->id
             ? $conversation->seller
             : $conversation->buyer;
@@ -64,7 +64,7 @@ class ConversationController extends Controller
         $listing = Listing::findOrFail($validated['listing_id']);
         $user = $request->user();
 
-        // Can't message your own listing
+        // Empêche d'envoyer un message sur sa propre annonce
         if ($listing->user_id === $user->id) {
             return response()->json([
                 'message' => 'Vous ne pouvez pas vous envoyer un message à vous-même'
@@ -94,18 +94,31 @@ class ConversationController extends Controller
     {
         $user = $request->user();
 
-        // Check authorization
         if ($user->id !== $conversation->buyer_id && $user->id !== $conversation->seller_id) {
             abort(403, 'Accès non autorisé');
         }
 
         $validated = $request->validate([
-            'message' => 'required|string|max:2000',
+            'message' => 'nullable|string|max:2000',
+            'image' => 'nullable|image|max:5120',
         ]);
+
+        if (empty($validated['message']) && !$request->hasFile('image')) {
+            return response()->json([
+                'message' => 'Un message ou une image est requis.',
+                'errors' => ['message' => ['Veuillez saisir un message ou joindre une image.']],
+            ], 422);
+        }
+
+        $imagePath = null;
+        if ($request->hasFile('image')) {
+            $imagePath = $request->file('image')->store('messages/' . $conversation->id, 'public');
+        }
 
         $message = $conversation->messages()->create([
             'sender_id' => $user->id,
-            'content' => $validated['message'],
+            'content' => $validated['message'] ?? null,
+            'image_path' => $imagePath,
         ]);
 
         $conversation->touch();

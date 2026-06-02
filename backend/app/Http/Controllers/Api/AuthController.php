@@ -26,10 +26,6 @@ class AuthController extends Controller
 
         $token = $user->createToken('auth-token')->plainTextToken;
 
-        // La méthode retourne du JSON comme réponse à la requête API.
-        // Ce JSON n'est pas envoyé directement à une "vue" Laravel traditionnelle,
-        // mais il sera reçu côté client (par exemple, une application frontend Vue.js)
-        // qui consommera l'API. Voici la ligne qui effectue cet envoi :
         return response()->json([
             'user' => $user,
             'token' => $token,

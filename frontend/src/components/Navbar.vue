@@ -33,7 +33,7 @@ watch(() => auth.isAuthenticated, (isAuth) => {
   <nav class="bg-white border-b border-gray-200 sticky top-0 z-50">
     <div class="max-w-6xl mx-auto px-4 sm:px-6">
       <div class="flex justify-between h-16">
-        <!-- Logo + Nav -->
+        <!-- Logo + Navigation -->
         <div class="flex items-center gap-8">
           <RouterLink to="/" class="flex items-center gap-2">
             <div class="w-8 h-8 bg-primary-600 rounded-lg flex items-center justify-center">
@@ -42,7 +42,7 @@ watch(() => auth.isAuthenticated, (isAuth) => {
             <span class="text-xl font-bold text-gray-900 hidden sm:block">EasyMarket</span>
           </RouterLink>
 
-          <!-- Desktop Navigation -->
+          <!-- Navigation bureau -->
           <div class="hidden md:flex items-center gap-1">
             <RouterLink to="/annonces" class="btn btn-ghost">
               Annonces
@@ -53,10 +53,10 @@ watch(() => auth.isAuthenticated, (isAuth) => {
           </div>
         </div>
 
-        <!-- Right Side -->
+        <!-- Cote droit -->
         <div class="flex items-center gap-3">
           <template v-if="auth.isAuthenticated">
-            <!-- Balance -->
+            <!-- Solde -->
             <RouterLink to="/portefeuille" class="hidden sm:flex items-center gap-2 px-3 py-1.5 bg-green-50 text-green-700 rounded-lg hover:bg-green-100 transition">
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
@@ -64,7 +64,7 @@ watch(() => auth.isAuthenticated, (isAuth) => {
               <span class="font-semibold">{{ formatBalance(wallet.balance) }}</span>
             </RouterLink>
 
-            <!-- User Menu -->
+            <!-- Menu utilisateur -->
             <div class="relative group">
               <button class="flex items-center gap-2 p-2 rounded-lg hover:bg-gray-100">
                 <div class="w-8 h-8 bg-primary-100 text-primary-700 rounded-full flex items-center justify-center font-medium">
@@ -75,7 +75,7 @@ watch(() => auth.isAuthenticated, (isAuth) => {
                 </svg>
               </button>
 
-              <!-- Dropdown -->
+              <!-- Menu deroulant -->
               <div class="absolute right-0 mt-1 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-1 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all">
                 <div class="px-4 py-2 border-b border-gray-100">
                   <p class="font-medium text-gray-900 truncate">{{ auth.user?.name }}</p>
@@ -117,7 +117,7 @@ watch(() => auth.isAuthenticated, (isAuth) => {
             </RouterLink>
           </template>
 
-          <!-- Mobile menu button -->
+          <!-- Bouton menu mobile -->
           <button @click="mobileMenuOpen = !mobileMenuOpen" class="md:hidden p-2 rounded-lg hover:bg-gray-100">
             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path v-if="!mobileMenuOpen" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
@@ -127,7 +127,7 @@ watch(() => auth.isAuthenticated, (isAuth) => {
         </div>
       </div>
 
-      <!-- Mobile Menu -->
+      <!-- Menu mobile -->
       <div v-if="mobileMenuOpen" class="md:hidden py-4 border-t border-gray-100">
         <div class="space-y-1">
           <RouterLink to="/annonces" @click="mobileMenuOpen = false" class="block px-3 py-2 rounded-lg hover:bg-gray-100">

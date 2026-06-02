@@ -30,12 +30,12 @@ class PaymentMethodController extends Controller
 
         $user = $request->user();
 
-        // If this is set as default, unset other defaults
+        // Si ce moyen est défini par défaut, retire le statut des autres
         if ($validated['is_default'] ?? false) {
             $user->paymentMethods()->update(['is_default' => false]);
         }
 
-        // If this is the first payment method, make it default
+        // S'il s'agit du tout premier moyen de paiement, on le marque par défaut
         if ($user->paymentMethods()->count() === 0) {
             $validated['is_default'] = true;
         }
@@ -47,12 +47,12 @@ class PaymentMethodController extends Controller
 
     public function destroy(Request $request, PaymentMethod $paymentMethod)
     {
-        // Verify ownership
+        // Vérifie que l'utilisateur est bien propriétaire de ce moyen de paiement
         if ($paymentMethod->user_id !== $request->user()->id) {
             return response()->json(['message' => 'Non autorisé'], 403);
         }
 
-        // Check if there are pending transactions
+        // Empêche la suppression si des transactions sont en attente sur ce moyen
         if ($paymentMethod->transactions()->where('status', 'pending')->exists()) {
             return response()->json([
                 'message' => 'Impossible de supprimer : transactions en cours'

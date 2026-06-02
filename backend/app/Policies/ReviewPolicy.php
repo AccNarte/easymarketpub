@@ -4,12 +4,11 @@ namespace App\Policies;
 
 use App\Models\Review;
 use App\Models\User;
-use Illuminate\Auth\Access\Response;
 
 class ReviewPolicy
 {
     /**
-     * Determine whether the user can view any models.
+     * Autorise la consultation de la liste des avis.
      */
     public function viewAny(User $user): bool
     {
@@ -17,16 +16,15 @@ class ReviewPolicy
     }
 
     /**
-     * Determine whether the user can view the model.
+     * Autorise la consultation d'un avis (uniquement s'il est publié).
      */
     public function view(User $user, Review $review): bool
     {
         return $review->status === 'published';
     }
 
-
     /**
-     * Determine whether the user can update the model.
+     * Autorise la modification d'un avis par son auteur.
      */
     public function update(User $user, Review $review): bool
     {
@@ -34,16 +32,15 @@ class ReviewPolicy
     }
 
     /**
-     * Determine whether the user can delete the model.
+     * Autorise la suppression d'un avis par son auteur.
      */
     public function delete(User $user, Review $review): bool
     {
         return $user->id === $review->reviewer_id;
     }
 
-
     /**
-     * Determine whether the user can permanently delete the model.
+     * Autorise le vendeur évalué à répondre une seule fois à un avis le concernant.
      */
     public function respond(User $user, Review $review): bool
     {

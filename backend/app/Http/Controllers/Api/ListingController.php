@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Listing;
 use App\Services\ImageService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
 
 class ListingController extends Controller
@@ -16,33 +17,44 @@ class ListingController extends Controller
 
     public function index(Request $request)
     {
-        $query = Listing::with(['user', 'category', 'images'])
-            ->active()
-            ->search($request->q);
+        $perPage = min((int) ($request->per_page ?? 12), 50);
+        $cacheKey = 'listings:' . md5(json_encode([
+            $request->q,
+            $request->category,
+            $request->min_price,
+            $request->max_price,
+            $request->sort,
+            $perPage,
+            $request->page ?? 1,
+        ]));
 
-        if ($request->category) {
-            $query->whereHas('category', fn($q) => $q->where('slug', $request->category));
-        }
+        $payload = Cache::remember($cacheKey, 30, function () use ($request, $perPage) {
+            $query = Listing::with(['user', 'category', 'images'])
+                ->active()
+                ->search($request->q);
 
-        if ($request->min_price) {
-            $query->where('price', '>=', $request->min_price);
-        }
+            if ($request->category) {
+                $query->whereHas('category', fn($q) => $q->where('slug', $request->category));
+            }
+            if ($request->min_price) {
+                $query->where('price', '>=', $request->min_price);
+            }
+            if ($request->max_price) {
+                $query->where('price', '<=', $request->max_price);
+            }
 
-        if ($request->max_price) {
-            $query->where('price', '<=', $request->max_price);
-        }
+            $sortField = match ($request->sort) {
+                'price_asc' => ['price', 'asc'],
+                'price_desc' => ['price', 'desc'],
+                default => ['created_at', 'desc'],
+            };
+            $query->orderBy(...$sortField);
 
-        $sortField = match($request->sort) {
-            'price_asc' => ['price', 'asc'],
-            'price_desc' => ['price', 'desc'],
-            default => ['created_at', 'desc'],
-        };
+            return $query->paginate($perPage);
+        });
 
-        $query->orderBy(...$sortField);
-
-        $perPage = min($request->per_page ?? 12, 50);
-
-        return response()->json($query->paginate($perPage));
+        return response()->json($payload)
+            ->header('Cache-Control', 'public, max-age=30');
     }
 
     public function show(Listing $listing)
@@ -62,7 +74,7 @@ class ListingController extends Controller
             'category_id' => 'required|exists:categories,id',
             'location' => 'required|string|max:255',
             'images' => 'array|max:10',
-            'images.*' => 'image|max:10240', // 10MB max
+            'images.*' => 'image|max:10240', // 10 Mo maximum
         ]);
 
         /** @var Listing $listing */
@@ -85,7 +97,7 @@ class ListingController extends Controller
                     'order' => $position,
                 ]);
 
-                // Send to image service for processing
+                // Délègue le traitement au service externe d'analyse d'images
                 $this->imageService->processImage($listingImage);
             }
         }
@@ -115,7 +127,7 @@ class ListingController extends Controller
     {
         $this->authorize('delete', $listing);
 
-        // Delete images from storage
+        // Supprime les fichiers images du stockage
         foreach ($listing->images as $image) {
             Storage::disk('public')->delete($image->original_path);
             if ($image->thumbnail_path) {

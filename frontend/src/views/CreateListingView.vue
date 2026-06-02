@@ -19,7 +19,7 @@ const imagesPreviews = ref([])
 const loading = ref(false)
 const error = ref(null)
 
-// City autocomplete
+// Autocompletion de la ville
 const cityQuery = ref('')
 const citySuggestions = ref([])
 const showCitySuggestions = ref(false)
@@ -114,7 +114,7 @@ onMounted(async () => {
         {{ error }}
       </div>
 
-      <!-- Title -->
+      <!-- Titre -->
       <div>
         <label class="block text-sm font-medium text-gray-700 mb-1">Titre *</label>
         <input v-model="form.title" type="text" class="input" required placeholder="Ex: iPhone 14 Pro Max 256Go" />

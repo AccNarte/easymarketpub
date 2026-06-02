@@ -18,11 +18,6 @@ const routes = [
     component: () => import('../views/ListingDetailView.vue')
   },
   {
-    path: '/produits',
-    name: 'produits',
-    component: () => import('../views/ProduitView.vue')
-  },
-  {
     path: '/publier',
     name: 'create-listing',
     component: () => import('../views/CreateListingView.vue'),

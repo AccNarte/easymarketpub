@@ -24,9 +24,13 @@ parameters:
         # Try-catch legitime pour gerer les appels HTTP/IO externes
         - identifier: xefi.noTryCatch
 
-        # Seeders peuvent legitimement contenir des methodes longues (listes statiques)
+        # Seeders peuvent legitimement contenir des methodes ou classes longues (listes statiques)
         -
             identifier: xefi.maxLinePerMethod
+            paths:
+                - database/seeders/*
+        -
+            identifier: xefi.maxLinePerClass
             paths:
                 - database/seeders/*
 

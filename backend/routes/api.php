@@ -11,12 +11,10 @@ use App\Http\Controllers\Api\ListingController;
 use App\Http\Controllers\Api\PaymentMethodController;
 use App\Http\Controllers\Api\PurchaseController;
 use App\Http\Controllers\Api\WalletController;
-use App\Http\Controllers\ProduitController;
 use App\Http\Controllers\ReviewController;
 use Illuminate\Support\Facades\Route;
 
-
-// Public routes
+// Routes publiques
 Route::post('/auth/register', [AuthController::class, 'register']);
 Route::post('/auth/login', [AuthController::class, 'login']);
 
@@ -26,24 +24,22 @@ Route::get('/categories/{category}', [CategoryController::class, 'show']);
 Route::get('/listings', [ListingController::class, 'index']);
 Route::get('/listings/{listing}', [ListingController::class, 'show']);
 
-// Image service callback (authenticated via API key)
+// Callback du service externe d'analyse d'images (authentifié via clé API)
 Route::post('/image-callback', [ImageCallbackController::class, 'handle']);
 
-
-
-// Protected routes
+// Routes protégées par authentification Sanctum
 Route::middleware('auth:sanctum')->group(function () {
-    // Auth
+    // Authentification
     Route::post('/auth/logout', [AuthController::class, 'logout']);
     Route::get('/auth/user', [AuthController::class, 'user']);
 
-    // Listings
+    // Annonces
     Route::post('/listings', [ListingController::class, 'store']);
     Route::put('/listings/{listing}', [ListingController::class, 'update']);
     Route::delete('/listings/{listing}', [ListingController::class, 'destroy']);
     Route::get('/user/listings', [ListingController::class, 'userListings']);
 
-    // Favorites
+    // Favoris
     Route::get('/favorites', [FavoriteController::class, 'index']);
     Route::post('/listings/{listing}/favorite', [FavoriteController::class, 'toggle']);
 
@@ -53,34 +49,31 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/conversations', [ConversationController::class, 'store']);
     Route::post('/conversations/{conversation}/messages', [ConversationController::class, 'sendMessage']);
 
-    // Wallet
+    // Portefeuille
     Route::get('/wallet/balance', [WalletController::class, 'balance']);
     Route::post('/wallet/deposit', [WalletController::class, 'deposit']);
     Route::post('/wallet/withdraw', [WalletController::class, 'withdraw']);
     Route::get('/wallet/transactions', [WalletController::class, 'transactions']);
     Route::get('/wallet/providers', [WalletController::class, 'providers']);
 
-    // Payment Methods
+    // Moyens de paiement
     Route::get('/payment-methods', [PaymentMethodController::class, 'index']);
     Route::post('/payment-methods', [PaymentMethodController::class, 'store']);
     Route::delete('/payment-methods/{paymentMethod}', [PaymentMethodController::class, 'destroy']);
     Route::post('/payment-methods/{paymentMethod}/default', [PaymentMethodController::class, 'setDefault']);
 
-    // Purchases
+    // Achats et ventes
     Route::post('/listings/{listing}/buy', [PurchaseController::class, 'store']);
     Route::get('/purchases', [PurchaseController::class, 'index']);
     Route::get('/sales', [PurchaseController::class, 'sales']);
+    Route::post('/sales/{purchase}/ship', [PurchaseController::class, 'markShipped']);
+    Route::post('/purchases/{purchase}/deliver', [PurchaseController::class, 'markDelivered']);
     Route::post('/purchases/{purchase}/reviews', [ReviewController::class, 'store'])
         ->name('reviews.store');
-    Route::get('/produits', [ProduitController::class, 'index']);
-    Route::post('/produits', [ProduitController::class, 'store']);
-    Route::get('/produits/{produit}', [ProduitController::class, 'show']);
-    Route::put('/produits/{produit}', [ProduitController::class, 'update']);
-    Route::delete('/produits/{produit}', [ProduitController::class, 'destroy']);
 
-    // Admin
+    // Administration
     Route::middleware('admin')->prefix('admin')->group(function () {
-        // Users
+        // Utilisateurs
         Route::get('/users', [AdminUserController::class, 'index']);
         Route::get('/users/{user}', [AdminUserController::class, 'show']);
         Route::put('/users/{user}', [AdminUserController::class, 'update']);
@@ -89,11 +82,10 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/users/{user}/unban', [AdminUserController::class, 'unban']);
         Route::delete('/users/{user}', [AdminUserController::class, 'destroy']);
 
-        // Listings
+        // Annonces
         Route::get('/listings', [AdminListingController::class, 'index']);
         Route::get('/listings/{listing}', [AdminListingController::class, 'show']);
         Route::put('/listings/{listing}', [AdminListingController::class, 'update']);
         Route::delete('/listings/{listing}', [AdminListingController::class, 'destroy']);
     });
 });
-

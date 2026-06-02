@@ -18,7 +18,7 @@ return new class extends Migration
             $table->timestamps();
         });
 
-        // Add sold status to listings
+        // Ajoute le statut « vendu » sur les annonces
         Schema::table('listings', function (Blueprint $table) {
             $table->foreignId('buyer_id')->nullable()->constrained('users')->onDelete('set null');
             $table->timestamp('sold_at')->nullable();

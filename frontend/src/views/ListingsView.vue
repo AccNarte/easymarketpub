@@ -3,6 +3,7 @@ import { ref, onMounted, watch, computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useListingsStore } from '../stores/listings'
 import ListingCard from '../components/ListingCard.vue'
+import api from '../services/api'
 
 const route = useRoute()
 const router = useRouter()
@@ -17,16 +18,16 @@ const filters = ref({
 })
 
 const showFilters = ref(false)
+const categories = ref([{ name: 'Toutes', slug: '' }])
 
-const categories = [
-  { name: 'Toutes', slug: '' },
-  { name: 'Véhicules', slug: 'vehicules' },
-  { name: 'Immobilier', slug: 'immobilier' },
-  { name: 'Électronique', slug: 'electronique' },
-  { name: 'Mode', slug: 'mode' },
-  { name: 'Maison', slug: 'maison' },
-  { name: 'Loisirs', slug: 'loisirs' },
-]
+const fetchCategories = async () => {
+  try {
+    const { data } = await api.get('/categories')
+    categories.value = [{ name: 'Toutes', slug: '' }, ...data]
+  } catch (e) {
+    // garde au moins "Toutes"
+  }
+}
 
 const activeFiltersCount = computed(() => {
   let count = 0
@@ -69,13 +70,16 @@ const loadFromQuery = () => {
   })
 }
 
-onMounted(loadFromQuery)
+onMounted(async () => {
+  await fetchCategories()
+  loadFromQuery()
+})
 watch(() => route.query, loadFromQuery)
 </script>
 
 <template>
   <div class="container-page">
-    <!-- Header -->
+    <!-- En-tete -->
     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
       <div>
         <h1 class="text-2xl font-bold text-gray-900">Annonces</h1>
@@ -83,7 +87,7 @@ watch(() => route.query, loadFromQuery)
       </div>
 
       <div class="flex items-center gap-2">
-        <!-- Search -->
+        <!-- Recherche -->
         <form @submit.prevent="applyFilters" class="flex-1 sm:w-64">
           <input
             v-model="filters.q"
@@ -93,7 +97,7 @@ watch(() => route.query, loadFromQuery)
           />
         </form>
 
-        <!-- Filter button -->
+        <!-- Bouton filtres -->
         <button @click="showFilters = !showFilters" class="btn btn-secondary relative">
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
@@ -106,10 +110,10 @@ watch(() => route.query, loadFromQuery)
       </div>
     </div>
 
-    <!-- Filters Panel -->
+    <!-- Panneau des filtres -->
     <div v-if="showFilters" class="card p-4 mb-6">
       <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <!-- Category -->
+        <!-- Categorie -->
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1">Catégorie</label>
           <select v-model="filters.category" class="input">
@@ -119,19 +123,19 @@ watch(() => route.query, loadFromQuery)
           </select>
         </div>
 
-        <!-- Min Price -->
+        <!-- Prix minimum -->
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1">Prix min</label>
           <input v-model="filters.minPrice" type="number" class="input" placeholder="0 €" />
         </div>
 
-        <!-- Max Price -->
+        <!-- Prix maximum -->
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1">Prix max</label>
           <input v-model="filters.maxPrice" type="number" class="input" placeholder="∞" />
         </div>
 
-        <!-- Sort -->
+        <!-- Tri -->
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1">Trier par</label>
           <select v-model="filters.sort" class="input">
@@ -148,7 +152,7 @@ watch(() => route.query, loadFromQuery)
       </div>
     </div>
 
-    <!-- Category Pills -->
+    <!-- Pastilles de categories -->
     <div class="flex gap-2 overflow-x-auto pb-4 mb-4 -mx-4 px-4 sm:mx-0 sm:px-0">
       <button
         v-for="cat in categories"
@@ -165,7 +169,7 @@ watch(() => route.query, loadFromQuery)
       </button>
     </div>
 
-    <!-- Results -->
+    <!-- Resultats -->
     <div v-if="store.loading" class="flex justify-center py-16">
       <div class="w-8 h-8 border-4 border-primary-600 border-t-transparent rounded-full animate-spin"></div>
     </div>

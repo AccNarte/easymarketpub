@@ -138,25 +138,25 @@ onMounted(async () => {
 
 <template>
   <div class="container-page">
-    <!-- Loading -->
+    <!-- Chargement -->
     <div v-if="loading" class="flex justify-center py-16">
       <div class="w-8 h-8 border-4 border-primary-600 border-t-transparent rounded-full animate-spin"></div>
     </div>
 
-    <!-- Error -->
+    <!-- Erreur -->
     <div v-else-if="error" class="text-center py-16">
       <p class="text-gray-500 mb-4">{{ error }}</p>
       <button @click="router.back()" class="btn btn-secondary">Retour</button>
     </div>
 
-    <!-- Content -->
+    <!-- Contenu -->
     <div v-else-if="listing" class="grid lg:grid-cols-5 gap-6">
-      <!-- Left: Images + Description -->
+      <!-- Gauche : images et description -->
       <div class="lg:col-span-3 space-y-4">
-        <!-- Main Image -->
+        <!-- Image principale -->
         <div class="card overflow-hidden">
           <div class="aspect-[4/3] bg-gray-100 relative">
-            <!-- Sold badge -->
+            <!-- Badge vendu -->
             <div v-if="isSold" class="absolute top-4 left-4 z-10 bg-red-500 text-white px-3 py-1 rounded-full text-sm font-medium">
               Vendu
             </div>
@@ -168,7 +168,7 @@ onMounted(async () => {
               </svg>
             </div>
 
-            <!-- Navigation arrows -->
+            <!-- Fleches de navigation -->
             <template v-if="images.length > 1">
               <button @click="prevImage" class="absolute left-2 top-1/2 -translate-y-1/2 w-10 h-10 bg-white/80 hover:bg-white rounded-full flex items-center justify-center shadow">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -183,7 +183,7 @@ onMounted(async () => {
             </template>
           </div>
 
-          <!-- Thumbnails -->
+          <!-- Miniatures -->
           <div v-if="images.length > 1" class="p-3 flex gap-2 overflow-x-auto border-t border-gray-100">
             <button
               v-for="(img, i) in images"
@@ -203,9 +203,9 @@ onMounted(async () => {
         </div>
       </div>
 
-      <!-- Right: Info + Seller -->
+      <!-- Droite : infos et vendeur -->
       <div class="lg:col-span-2 space-y-4">
-        <!-- Price & Info -->
+        <!-- Prix et infos -->
         <div class="card p-5">
           <p class="text-2xl font-bold text-primary-600 mb-1">
             {{ formatPrice(listing.price) }}
@@ -234,7 +234,7 @@ onMounted(async () => {
           </span>
         </div>
 
-        <!-- Buy Section -->
+        <!-- Section achat -->
         <div v-if="!isOwner" class="card p-5">
           <div v-if="isSold" class="text-center text-gray-500">
             Cette annonce a été vendue
@@ -259,7 +259,7 @@ onMounted(async () => {
           </div>
         </div>
 
-        <!-- Seller -->
+        <!-- Vendeur -->
         <div class="card p-5">
           <h3 class="font-semibold text-gray-900 mb-4">Vendeur</h3>
           <div class="flex items-center gap-3 mb-4">
@@ -277,7 +277,7 @@ onMounted(async () => {
           </button>
         </div>
 
-        <!-- Safety Tips -->
+        <!-- Conseils de securite -->
         <div class="bg-amber-50 border border-amber-200 rounded-xl p-4">
           <h4 class="font-medium text-amber-800 mb-2">Conseils de sécurité</h4>
           <ul class="text-sm text-amber-700 space-y-1">
@@ -289,7 +289,7 @@ onMounted(async () => {
       </div>
     </div>
 
-    <!-- Message Modal -->
+    <!-- Modale message -->
     <div v-if="showMessageModal" class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
       <div class="bg-white rounded-xl w-full max-w-md p-5">
         <h3 class="text-lg font-semibold text-gray-900 mb-4">Envoyer un message</h3>

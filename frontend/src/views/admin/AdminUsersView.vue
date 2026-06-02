@@ -118,12 +118,12 @@ onMounted(load)
 
 <template>
   <div>
-    <!-- Flash -->
+    <!-- Message flash -->
     <div v-if="flash" class="mb-4 px-4 py-2 bg-green-100 text-green-800 rounded-lg text-sm">
       {{ flash }}
     </div>
 
-    <!-- Filters -->
+    <!-- Filtres -->
     <div class="bg-white p-4 rounded-lg border border-gray-200 mb-4 grid sm:grid-cols-4 gap-3">
       <input
         v-model="search"
@@ -142,7 +142,7 @@ onMounted(load)
       </label>
     </div>
 
-    <!-- Table -->
+    <!-- Tableau -->
     <div class="bg-white rounded-lg border border-gray-200 overflow-hidden">
       <table class="w-full text-sm">
         <thead class="bg-gray-50 text-left">
@@ -261,7 +261,7 @@ onMounted(load)
             </button>
           </section>
 
-          <!-- Password -->
+          <!-- Mot de passe -->
           <section class="border-t border-gray-100 pt-4">
             <h3 class="font-semibold text-gray-900 mb-3">Réinitialiser le mot de passe</h3>
             <div class="grid sm:grid-cols-2 gap-3">
@@ -275,7 +275,7 @@ onMounted(load)
             <p class="text-xs text-gray-500 mt-1">Déconnecte l'utilisateur de toutes ses sessions.</p>
           </section>
 
-          <!-- Ban -->
+          <!-- Bannissement -->
           <section class="border-t border-gray-100 pt-4">
             <h3 class="font-semibold text-gray-900 mb-3">Bannissement</h3>
             <template v-if="selected.banned_at">

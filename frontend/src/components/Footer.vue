@@ -6,7 +6,7 @@ import { RouterLink } from 'vue-router'
   <footer class="bg-white border-t border-gray-200 mt-auto">
     <div class="max-w-6xl mx-auto px-4 sm:px-6 py-12">
       <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
-        <!-- Brand -->
+        <!-- Marque -->
         <div class="col-span-2 md:col-span-1">
           <RouterLink to="/" class="flex items-center gap-2 mb-4">
             <div class="w-8 h-8 bg-primary-600 rounded-lg flex items-center justify-center">
@@ -50,10 +50,10 @@ import { RouterLink } from 'vue-router'
         </div>
       </div>
 
-      <!-- Bottom -->
+      <!-- Bas de page -->
       <div class="mt-12 pt-8 border-t border-gray-200 flex flex-col sm:flex-row justify-between items-center gap-4">
         <p class="text-sm text-gray-500">
-          © 2024 EasyMarket. Tous droits réservés.
+          © 2026 EasyMarket. Tous droits réservés.
         </p>
         <div class="flex items-center gap-4">
           <a href="#" class="text-gray-400 hover:text-gray-600">

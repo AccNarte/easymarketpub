@@ -80,15 +80,10 @@ class Listing extends Model
 
     public function getThumbnailAttribute(): ?string
     {
-        /** @var ListingImage|null $primaryImage */
-        $primaryImage = $this->images()->where('is_primary', true)->first();
-        if ($primaryImage) {
-            return $primaryImage->thumbnail_url;
-        }
-
-        /** @var ListingImage|null $first */
-        $first = $this->images()->first();
-        return $first?->thumbnail_url;
+        /** @var \Illuminate\Database\Eloquent\Collection<int, ListingImage> $images */
+        $images = $this->relationLoaded('images') ? $this->images : $this->images()->get();
+        $primary = $images->firstWhere('is_primary', true) ?? $images->first();
+        return $primary?->thumbnail_url;
     }
 
     public function scopeActive($query)
@@ -100,7 +95,7 @@ class Listing extends Model
     {
         if (!$term) return $query;
 
-        // PostgreSQL full-text search or SQLite LIKE fallback
+        // Recherche plein-texte côté PostgreSQL, repli en LIKE pour SQLite (dev local)
         if ($query->getConnection()->getDriverName() === 'pgsql') {
             return $query->whereRaw(
                 "to_tsvector('french', title || ' ' || description) @@ plainto_tsquery('french', ?)",
@@ -108,7 +103,7 @@ class Listing extends Model
             );
         }
 
-        // SQLite fallback
+        // Repli SQLite
         return $query->where(function ($q) use ($term) {
             $q->where('title', 'LIKE', "%{$term}%")
               ->orWhere('description', 'LIKE', "%{$term}%");

@@ -14,7 +14,7 @@ return new class extends Migration
             $table->string('original_path');
             $table->string('thumbnail_path')->nullable();
             $table->string('medium_path')->nullable();
-            $table->json('analysis')->nullable(); // Data from image service
+            $table->json('analysis')->nullable(); // Données renvoyées par le service externe d'analyse
             $table->boolean('is_primary')->default(false);
             $table->integer('order')->default(0);
             $table->timestamps();
